@@ -25,7 +25,7 @@ export class ScoreboardComponent implements OnDestroy {
     this.score2 = 0;
   }
 
-  @HostListener('document:keydown', ['$event'])
+/*  @HostListener('document:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
     if (event.key === 'ArrowUp') {
       this.incrementScore1();
@@ -44,7 +44,14 @@ export class ScoreboardComponent implements OnDestroy {
       this.incrementScore2();
     }
   }
+*/
 
+  @HostListener('play', ['$event'])
+  onPlay(event: Event): void {
+    this.incrementScore2();
+    console.log('Video is playing:', event);
+    // Добавьте логику для обработки события play здесь
+  }
   ngOnDestroy() {
 
   }
