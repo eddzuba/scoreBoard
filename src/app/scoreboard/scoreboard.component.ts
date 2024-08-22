@@ -46,7 +46,7 @@ export class ScoreboardComponent implements OnDestroy {
   }
 */
 
-  @HostListener('play', ['$event'])
+  @HostListener('copy', ['$event'])
   onPlay(event: Event): void {
     this.incrementScore2();
     console.log('Video is playing:', event);
