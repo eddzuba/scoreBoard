@@ -46,13 +46,13 @@ export class ScoreboardComponent implements OnDestroy {
   }
 */
 
-  @HostListener('copy', ['$event'])
+  @HostListener('window:copy', ['$event'])
   onPlay(event: Event): void {
     this.incrementScore2();
     // Добавьте логику для обработки события play здесь
   }
 
-  @HostListener('paste', ['$event'])
+  @HostListener('window:cut', ['$event'])
   onPast(event: Event): void {
     this.incrementScore1();
     // Добавьте логику для обработки события play здесь
