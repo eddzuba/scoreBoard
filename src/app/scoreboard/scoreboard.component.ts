@@ -11,7 +11,7 @@ export class ScoreboardComponent implements OnDestroy {
   score2 = 0;
 
   constructor() {
-    document.documentElement.requestFullscreen();
+
   }
 
   incrementScore1() {
