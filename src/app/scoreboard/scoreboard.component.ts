@@ -49,7 +49,12 @@ export class ScoreboardComponent implements OnDestroy {
   @HostListener('copy', ['$event'])
   onPlay(event: Event): void {
     this.incrementScore2();
-    console.log('Video is playing:', event);
+    // Добавьте логику для обработки события play здесь
+  }
+
+  @HostListener('past', ['$event'])
+  onPast(event: Event): void {
+    this.incrementScore1();
     // Добавьте логику для обработки события play здесь
   }
   ngOnDestroy() {
