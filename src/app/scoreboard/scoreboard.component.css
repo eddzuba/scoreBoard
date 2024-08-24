@@ -16,8 +16,9 @@
 }
 
 .score {
-  font-size: 10em;
-  margin: 10px 0;
+  font-size: 14em;
+  margin: 5px 0;
+  transform: rotate(90deg);
 }
 
 .button {
