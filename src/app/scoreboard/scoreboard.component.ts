@@ -10,8 +10,8 @@ import {CommonModule} from "@angular/common";
   imports: [CommonModule, DragDropModule ]
 })
 export class ScoreboardComponent  {
-  score1 = 23;
-  score2 = 20;
+  score1 = 0;
+  score2 = 0;
   currentSound: number = 0; // номер счета в произношении счета
 
   playScore1 = 0; // число которое нужно проиграть первым
@@ -20,12 +20,19 @@ export class ScoreboardComponent  {
   matchOver:boolean = false; // Матч завершен
 
   private audio: HTMLAudioElement;
+  whistlePlay: boolean = false;
+
 
 
   constructor() {
     this.audio = new Audio();
     // Добавляем обработчик события `ended`
     this.audio.addEventListener('ended', () => {
+      if(this.whistlePlay) {
+        this.whistlePlay = false;
+        return;
+      }
+
       if(this.matchOver) {
         return;
       }
@@ -131,5 +138,12 @@ export class ScoreboardComponent  {
     }
 
     return false;
+  }
+
+  whistle() {
+    this.whistlePlay = true;
+    this.audio.src = `audio/whistle.wav`;
+    this.audio.play();
+
   }
 }
