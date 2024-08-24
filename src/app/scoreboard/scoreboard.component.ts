@@ -30,6 +30,9 @@ export class ScoreboardComponent  {
     this.audio.addEventListener('ended', () => {
       if(this.whistlePlay) {
         this.whistlePlay = false;
+        if(this.score1 == 0 && this.score2 == 0 ){
+          this.playScore(this.playScore1);
+        }
         return;
       }
 
