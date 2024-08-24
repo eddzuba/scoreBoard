@@ -31,7 +31,8 @@ export class ScoreboardComponent  {
   }
 
   dropped(event: CdkDragDrop<string[]>): void {
-    if(event?.currentIndex === 0) {
+
+    if(event?.distance.y > 0) {
       this.incrementScore2();
     } else {
       this.incrementScore1();
