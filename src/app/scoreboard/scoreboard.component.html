@@ -1,7 +1,5 @@
-<div class="scoreboard"
-     cdkDropList
-     (cdkDropListDropped)="drop($event)">
-  <div class="team">
+<div class="scoreboard">
+  <div class="team" cdkDrag>
 
     <div id="score1" class="score">{{ score1 }}</div>
     <button (click)="incrementScore1()" class="button">+1</button>

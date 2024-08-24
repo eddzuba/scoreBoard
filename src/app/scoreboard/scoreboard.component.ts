@@ -1,5 +1,5 @@
 import { Component, HostListener, OnDestroy } from '@angular/core';
-import {CdkDragDrop, DragDropModule, moveItemInArray} from "@angular/cdk/drag-drop";
+import {CdkDrag, CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
 import {CommonModule} from "@angular/common";
 
 @Component({
@@ -7,7 +7,7 @@ import {CommonModule} from "@angular/common";
   templateUrl: './scoreboard.component.html',
   standalone: true,
   styleUrls: ['./scoreboard.component.css'],
-  imports: [CommonModule, DragDropModule]
+  imports: [CommonModule, CdkDrag]
 })
 export class ScoreboardComponent implements OnDestroy {
   score1 = 1;
