@@ -1,5 +1,5 @@
-import { Component, HostListener, OnDestroy } from '@angular/core';
-import {CdkDrag, CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
+import { Component } from '@angular/core';
+import { CdkDragDrop, DragDropModule} from "@angular/cdk/drag-drop";
 import {CommonModule} from "@angular/common";
 
 @Component({
@@ -7,9 +7,9 @@ import {CommonModule} from "@angular/common";
   templateUrl: './scoreboard.component.html',
   standalone: true,
   styleUrls: ['./scoreboard.component.css'],
-  imports: [CommonModule, CdkDrag]
+  imports: [CommonModule, DragDropModule ]
 })
-export class ScoreboardComponent implements OnDestroy {
+export class ScoreboardComponent  {
   score1 = 1;
   score2 = 0;
 
@@ -30,47 +30,8 @@ export class ScoreboardComponent implements OnDestroy {
     this.score2 = 0;
   }
 
-/*  @HostListener('document:keydown', ['$event'])
-  handleKeyboardEvent(event: KeyboardEvent) {
-    if (event.key === 'ArrowUp') {
-      this.incrementScore1();
-    } else if (event.key === 'ArrowDown') {
-      this.incrementScore2();
-    } else if (event.key === 'r') {
-      this.resetScores();
-    }
-  }
-
-  @HostListener('document:mousedown', ['$event'])
-  handleMouseEvent(event: MouseEvent) {
-    if (event.button === 0) { // Left mouse button
-      this.incrementScore1();
-    } else if (event.button === 2) { // Right mouse button
-      this.incrementScore2();
-    }
-  }
-*/
-
-  /*@HostListener('window:copy', ['$event'])
-  onPlay(event: Event): void {
-    this.incrementScore2();
-    // Добавьте логику для обработки события play здесь
-  }
-
-  @HostListener('window:cut', ['$event'])
-  onPast(event: Event): void {
-    this.incrementScore1();
-    // Добавьте логику для обработки события play здесь
-  }*/
-  ngOnDestroy() {
-
-  }
-
-/*  onTouchStart($event: MouseEvent): void {
-    this.incrementScore1();
-  }*/
-
-  drop(event: CdkDragDrop<string[]>): void {
+  dropped(event: CdkDragDrop<string[]>): void {
     this.incrementScore1();
   }
+
 }
