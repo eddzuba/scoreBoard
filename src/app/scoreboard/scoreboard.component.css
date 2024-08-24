@@ -52,3 +52,10 @@
 .connect:hover {
   background-color: #218838;
 }
+
+.allScore {
+  flex-grow: 2;
+}
+.whistle {
+  width: 100%;
+}
