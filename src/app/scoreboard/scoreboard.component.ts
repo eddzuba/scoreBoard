@@ -48,7 +48,7 @@ export class ScoreboardComponent implements OnDestroy {
   }
 */
 
-  @HostListener('window:copy', ['$event'])
+  /*@HostListener('window:copy', ['$event'])
   onPlay(event: Event): void {
     this.incrementScore2();
     // Добавьте логику для обработки события play здесь
@@ -58,8 +58,12 @@ export class ScoreboardComponent implements OnDestroy {
   onPast(event: Event): void {
     this.incrementScore1();
     // Добавьте логику для обработки события play здесь
-  }
+  }*/
   ngOnDestroy() {
 
+  }
+
+  onTouchStart($event: TouchEvent): void {
+    this.incrementScore1();
   }
 }
