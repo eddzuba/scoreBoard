@@ -1,10 +1,13 @@
 import { Component, HostListener, OnDestroy } from '@angular/core';
+import {CdkDragDrop, DragDropModule, moveItemInArray} from "@angular/cdk/drag-drop";
+import {CommonModule} from "@angular/common";
 
 @Component({
   selector: 'scoreboard',
   templateUrl: './scoreboard.component.html',
   standalone: true,
-  styleUrls: ['./scoreboard.component.css']
+  styleUrls: ['./scoreboard.component.css'],
+  imports: [CommonModule, DragDropModule]
 })
 export class ScoreboardComponent implements OnDestroy {
   score1 = 1;
@@ -63,7 +66,11 @@ export class ScoreboardComponent implements OnDestroy {
 
   }
 
-  onTouchStart($event: MouseEvent): void {
+/*  onTouchStart($event: MouseEvent): void {
+    this.incrementScore1();
+  }*/
+
+  drop(event: CdkDragDrop<string[]>): void {
     this.incrementScore1();
   }
 }

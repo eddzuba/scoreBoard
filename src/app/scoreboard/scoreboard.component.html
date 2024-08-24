@@ -1,5 +1,6 @@
 <div class="scoreboard"
-     (click)="onTouchStart($event)">
+     cdkDropList
+     (cdkDropListDropped)="drop($event)">
   <div class="team">
 
     <div id="score1" class="score">{{ score1 }}</div>
