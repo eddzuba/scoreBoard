@@ -7,7 +7,7 @@ import { Component, HostListener, OnDestroy } from '@angular/core';
   styleUrls: ['./scoreboard.component.css']
 })
 export class ScoreboardComponent implements OnDestroy {
-  score1 = 0;
+  score1 = 1;
   score2 = 0;
 
   constructor() {
@@ -63,7 +63,7 @@ export class ScoreboardComponent implements OnDestroy {
 
   }
 
-  onTouchStart($event: TouchEvent): void {
+  onTouchStart($event: MouseEvent): void {
     this.incrementScore1();
   }
 }
