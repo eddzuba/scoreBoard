@@ -31,7 +31,12 @@ export class ScoreboardComponent  {
   }
 
   dropped(event: CdkDragDrop<string[]>): void {
-    this.incrementScore1();
+    if(event?.currentIndex === 0) {
+      this.incrementScore2();
+    } else {
+      this.incrementScore1();
+    }
+
   }
 
 }
