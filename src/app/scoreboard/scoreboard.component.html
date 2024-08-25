@@ -7,7 +7,7 @@
         <div id="score1" class="score">{{ rotateScore ? score1 : score2 }}</div>
 
       </div>
-      <div (click)="whistle()" class="button whistle">
+      <div (click)="whistle()"  class="button whistle">
         <img src="whistle.png" height="35px" class="whistleImg"/>
         <img src="round.png" height="35px" class="round" (click)="roundClick($event)"/>
       </div>

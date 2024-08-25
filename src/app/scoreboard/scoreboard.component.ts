@@ -23,6 +23,10 @@ export class ScoreboardComponent  {
   private audio: HTMLAudioElement;
   whistlePlay: boolean = false;
 
+  private clickTimeout: any;
+  private delay: number = 500; // Задержка для определения двойного клика
+  private whistleFirstClick: boolean = false;
+
 
 
   constructor() {
@@ -153,14 +157,26 @@ export class ScoreboardComponent  {
   }
 
   whistle() {
-    this.whistlePlay = true;
-    this.audio.src = `audio/whistle.wav`;
-    this.audio.play();
+    if(!this.whistleFirstClick) {
+      this.whistleFirstClick = true;
+      this.clickTimeout = setTimeout(() => {
+        this.whistlePlay = true;
+        this.whistleFirstClick = false;
+        this.audio.src = `audio/whistle.wav`;
+        this.audio.play();
 
+      }, this.delay);
+    } else {
+
+      clearTimeout(this.clickTimeout);
+      this.whistleFirstClick = false;
+      alert('double');
+    }
   }
 
   roundClick(event: MouseEvent) {
     event.stopPropagation(); // Останавливаем всплытие события
     this.rotateScore = !this.rotateScore;
   }
+
 }
