@@ -18,6 +18,7 @@ export class ScoreboardComponent  {
   playScore2 = 0; // число которое нужно проиграть вторым
   isControlBall: boolean = false; //Это контрольный мяч
   matchOver:boolean = false; // Матч завершен
+  rotateScore: boolean = false;
 
   private audio: HTMLAudioElement;
   whistlePlay: boolean = false;
@@ -156,5 +157,10 @@ export class ScoreboardComponent  {
     this.audio.src = `audio/whistle.wav`;
     this.audio.play();
 
+  }
+
+  roundClick(event: MouseEvent) {
+    event.stopPropagation(); // Останавливаем всплытие события
+    this.rotateScore = !this.rotateScore;
   }
 }

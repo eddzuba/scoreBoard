@@ -18,15 +18,15 @@
 }
 
 .score {
-  font-size: 17em;
+  font-size: 16em;
 /*  margin: 5px 0;*/
   transform: rotate(90deg);
 }
 
 .button {
-  padding: 10px 20px;
+  padding: 5px 5px;
   font-size: 1em;
-  margin: 5px;
+/*  margin: 5px;*/
   border: none;
   border-radius: 5px;
   background-color: #007bff;
@@ -70,4 +70,10 @@
   cursor: pointer;
   height: 100%;
   background-color: mediumseagreen;
+}
+ .round {
+   padding-left: 144px;
+ }
+.whistleImg {
+  padding-left: 61px;
 }

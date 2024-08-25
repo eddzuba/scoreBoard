@@ -4,15 +4,16 @@
   <div class="allScore">
       <div class="team" cdkDrag>
 
-        <div id="score1" class="score">{{ score1 }}</div>
+        <div id="score1" class="score">{{ rotateScore ? score1 : score2 }}</div>
 
       </div>
       <div (click)="whistle()" class="button whistle">
-        <img src="whistle.png" height="25" />
+        <img src="whistle.png" height="35px" class="whistleImg"/>
+        <img src="round.png" height="35px" class="round" (click)="roundClick($event)"/>
       </div>
       <div class="team" cdkDrag>
 
-        <div id="score score2" class="score">{{ score2 }}</div>
+        <div id="score score2" class="score">{{ rotateScore ? score2 : score1  }}</div>
 
       </div>
   </div>
