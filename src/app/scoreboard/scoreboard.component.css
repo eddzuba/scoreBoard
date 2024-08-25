@@ -13,13 +13,13 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 20px;
+ /* margin-bottom: 20px;*/
   flex-grow: 2;
 }
 
 .score {
-  font-size: 14em;
-  margin: 5px 0;
+  font-size: 19.5em;
+/*  margin: 5px 0;*/
   transform: rotate(90deg);
 }
 
