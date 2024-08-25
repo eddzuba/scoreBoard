@@ -84,6 +84,10 @@ export class ScoreboardComponent  {
   resetScores() {
     this.score1 = 0;
     this.score2 = 0;
+
+    this.playScore1 = 0;
+    this.playScore2 = 0;
+
     this.currentSound = 0;
     this.whistlePlay = false;
     this.matchOver = false;
