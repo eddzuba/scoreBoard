@@ -3,9 +3,10 @@
   flex-direction: row;
   align-items: center;
   background-color: #ffffff;
-  padding: 20px;
+  /*padding: 20px;*/
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  height: 100%;
 }
 
 .team {
@@ -13,6 +14,7 @@
   flex-direction: column;
   align-items: center;
   margin-bottom: 20px;
+  flex-grow: 2;
 }
 
 .score {
@@ -55,7 +57,17 @@
 
 .allScore {
   flex-grow: 2;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 .whistle {
   width: 100%;
+}
+
+.buttons {
+  width: 35px;
+  cursor: pointer;
+  height: 100%;
+  background-color: mediumseagreen;
 }

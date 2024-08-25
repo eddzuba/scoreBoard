@@ -1,20 +1,17 @@
 <div class="scoreboard" cdkDropList  (cdkDropListDropped)="dropped($event)">
-  <div class="buttons">
-    <button (click)="resetScores()" class="button reset">Reset</button>
+  <div (click)="resetScores()" class="buttons">
   </div>
-    <div class="allScore">
-    <div class="team" cdkDrag>
+  <div class="allScore">
+      <div class="team" cdkDrag>
 
-      <div id="score1" class="score">{{ score1 }}</div>
-      <button (click)="whistle()" class="button whistle">+1</button>
-    </div>
-    <div class="team" cdkDrag>
+        <div id="score1" class="score">{{ score1 }}</div>
 
-      <div id="score score2" class="score">{{ score2 }}</div>
+      </div>
+      <div (click)="whistle()" class="button whistle">+1</div>
+      <div class="team" cdkDrag>
 
-    </div>
+        <div id="score score2" class="score">{{ score2 }}</div>
+
+      </div>
   </div>
-
-
-
 </div>
