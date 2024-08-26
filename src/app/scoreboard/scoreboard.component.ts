@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CdkDragDrop, DragDropModule} from "@angular/cdk/drag-drop";
 import {CommonModule} from "@angular/common";
+import {GameState} from "../gameState/gameStates";
 
 @Component({
   selector: 'scoreboard',
@@ -13,6 +14,8 @@ export class ScoreboardComponent  {
   score1 = 0;
   score2 = 0;
   currentSound: number = 0; // номер счета в произношении счета
+
+  curState: GameState = new GameState();
 
   playScore1 = 0; // число которое нужно проиграть первым
   playScore2 = 0; // число которое нужно проиграть вторым
@@ -30,6 +33,8 @@ export class ScoreboardComponent  {
 
 
   constructor() {
+
+    this.curState.reset();
     this.audio = new Audio();
     // Добавляем обработчик события `ended`
     this.audio.addEventListener('ended', () => {
@@ -79,11 +84,13 @@ export class ScoreboardComponent  {
   incrementScore1() {
     this.score1++;
     this.playSound(1);
+    this.curState.push( { score1: this.score1, score2: this.score2, serverSide: 1 } );
   }
 
   incrementScore2() {
     this.score2++;
     this.playSound(2);
+    this.curState.push( { score1: this.score1, score2: this.score2, serverSide: 2 } );
   }
 
   resetScores() {
@@ -96,6 +103,8 @@ export class ScoreboardComponent  {
     this.currentSound = 0;
     this.whistlePlay = false;
     this.matchOver = false;
+
+    this.curState.reset();
 
   }
 
@@ -170,7 +179,7 @@ export class ScoreboardComponent  {
 
       clearTimeout(this.clickTimeout);
       this.whistleFirstClick = false;
-      alert('double');
+      this.rollbackGameScore();
     }
   }
 
@@ -179,4 +188,17 @@ export class ScoreboardComponent  {
     this.rotateScore = !this.rotateScore;
   }
 
+  private rollbackGameScore() {
+    let prevState = this.curState.pop();
+    if( prevState != undefined) {
+        prevState = this.curState.pop();
+        if( prevState !== undefined) {
+          this.score1 = prevState.score1;
+          this.score2 = prevState.score2;
+          this.playSound(prevState.serverSide);
+          this.curState.push(prevState);
+        }
+
+    }
+  }
 }
