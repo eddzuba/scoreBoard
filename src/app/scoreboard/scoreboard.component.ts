@@ -1,7 +1,9 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import { CdkDragDrop, DragDropModule} from "@angular/cdk/drag-drop";
 import {CommonModule} from "@angular/common";
 import {GameState} from "../gameState/gameStates";
+import {AudioCacheService} from "../audioCacheService";
+import {PlaylistService} from "../playlistService";
 
 @Component({
   selector: 'scoreboard',
@@ -10,7 +12,7 @@ import {GameState} from "../gameState/gameStates";
   styleUrls: ['./scoreboard.component.css'],
   imports: [CommonModule, DragDropModule ]
 })
-export class ScoreboardComponent  {
+export class ScoreboardComponent implements OnInit {
   score1 = 0;
   score2 = 0;
   currentSound: number = 0; // номер счета в произношении счета
@@ -23,7 +25,6 @@ export class ScoreboardComponent  {
   matchOver:boolean = false; // Матч завершен
   rotateScore: boolean = false;
 
-  private audio: HTMLAudioElement;
   whistlePlay: boolean = false;
 
   private clickTimeout: any;
@@ -32,53 +33,23 @@ export class ScoreboardComponent  {
 
 
 
-  constructor() {
+  constructor(private audioCacheService: AudioCacheService, private playlistService: PlaylistService) {
 
     this.curState.reset();
-    this.audio = new Audio();
-    // Добавляем обработчик события `ended`
-    this.audio.addEventListener('ended', () => {
-      if(this.whistlePlay) {
-        this.whistlePlay = false;
-        if(this.score1 == 0 && this.score2 == 0 ){
-          this.playScore(this.playScore1);
-        }
-        return;
-      }
+  }
 
-      if(this.matchOver) {
-        return;
-      }
-      if(this.isControlBall){
-        this.isControlBall = false;
-        return;
-      }
+  ngOnInit(): void {
+    const audioUrls = [
+      'audio/whistle.ogg',
+      'audio/win.ogg',
+      'audio/controlball.ogg'
+    ];
 
-      if(this.currentSound == 1){
-        this.currentSound = 0;
-        this.isControlBall = this.isControlBallScore()
-        if (this.isControlBall) {
-          this.audio.src = `audio/controlball.wav`;
-          this.audio.play();
-          return;
-        }
-
-        this.matchOver = this.isMatchOver();
-        if(this.isMatchOver()) {
-          this.audio.src = `audio/win.wav`;
-          this.audio.play();
-          return;
-        }
-        return;
-      }
-
-      if(this.currentSound == 0){
-        this.playScore(this.playScore2);
-        this.currentSound = 1;
-        return;
-      }
-
-    });
+    // Добавляем файлы от 0.ogg до 31.ogg
+    for (let i = 0; i <= 31; i++) {
+      audioUrls.push(`audio/${i}.ogg`);
+    }
+    this.audioCacheService.preloadAudioFiles(audioUrls);
   }
 
   incrementScore1() {
@@ -127,12 +98,23 @@ export class ScoreboardComponent  {
       this.playScore2 = this.score1;
     }
     this.playScore(this.playScore1);
+    this.playScore(this.playScore2);
 
+    this.isControlBall = this.isControlBallScore()
+    if (this.isControlBall) {
+      this.playlistService.addToPlaylist(`audio/controlball.ogg`);
+    }
+
+    this.matchOver = this.isMatchOver();
+    if(this.isMatchOver()) {
+      this.playlistService.addToPlaylist(`audio/win.ogg`);
+    }
   }
 
   private playScore(number: number) {
-    this.audio.src = `audio/${number}.wav`;
-    this.audio.play();
+    /*this.audio.src = `audio/${number}.ogg`;
+    this.audio.play();*/
+    this.playlistService.addToPlaylist(`audio/${number}.ogg`);
   }
 
   private isControlBallScore() {
@@ -171,8 +153,7 @@ export class ScoreboardComponent  {
       this.clickTimeout = setTimeout(() => {
         this.whistlePlay = true;
         this.whistleFirstClick = false;
-        this.audio.src = `audio/whistle.wav`;
-        this.audio.play();
+        this.audioCacheService.playAudio(`audio/whistle.ogg`)
 
       }, this.delay);
     } else {

@@ -72,8 +72,33 @@
   background-color: mediumseagreen;
 }
  .round {
-   padding-left: 144px;
+   float: right;
+   margin-right: 15px;
  }
 .whistleImg {
   padding-left: 61px;
+}
+.net {
+  background: linear-gradient(white 25%, transparent 25%) 0 0, linear-gradient(white 25%, transparent 25%) 0 0, linear-gradient(90deg, white 25%, transparent 25%) 0 0, linear-gradient(90deg, white 25%, transparent 25%) 0 0;
+  background-size: 20px 20px;
+  background-color: #000 !important;
+  border: 2px solid #000;
+  box-sizing: border-box;
+}
+
+.judge {
+  width: 35px;
+  height: 20px;
+  background-color: black;
+  margin-top: 10px;
+}
+
+.judgeBottom {
+  width: 35px;
+  height: 20px;
+  background-color: black;
+  margin-top: 10px;
+  position: absolute;
+  bottom: 0;
+  margin-bottom: 15px;
 }
