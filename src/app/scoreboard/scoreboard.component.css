@@ -73,7 +73,7 @@
 }
  .round {
    float: right;
-   margin-right: 15px;
+   margin-right: 1px;
  }
 .whistleImg {
   padding-left: 61px;
@@ -84,6 +84,7 @@
   background-color: #000 !important;
   border: 2px solid #000;
   box-sizing: border-box;
+  height: 49px;
 }
 
 .judge {
