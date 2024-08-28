@@ -3,13 +3,13 @@
      <div [ngClass]="rotateScore ? 'judge' : 'judgeBottom'" class="judge"></div>
     <img src="round.png" height="35px" class="round" (click)="roundClick($event)"/>
   </div>
-  <div class="allScore">
+  <div class="allScore" (click)="whistle()">
       <div class="team" cdkDrag>
 
         <div id="score1" class="score">{{ rotateScore ? score1 : score2 }}</div>
 
       </div>
-      <div (click)="whistle()"  class="button whistle net">
+      <div   class="button whistle net">
       </div>
       <div class="team" cdkDrag>
 
