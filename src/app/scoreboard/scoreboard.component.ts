@@ -2,7 +2,6 @@ import {Component, OnInit} from '@angular/core';
 import { CdkDragDrop, DragDropModule} from "@angular/cdk/drag-drop";
 import {CommonModule} from "@angular/common";
 import {GameState} from "../gameState/gameStates";
-import {AudioCacheService} from "../audioCacheService";
 import {PlaylistService} from "../playlistService";
 
 @Component({
@@ -12,7 +11,7 @@ import {PlaylistService} from "../playlistService";
   styleUrls: ['./scoreboard.component.css'],
   imports: [CommonModule, DragDropModule ]
 })
-export class ScoreboardComponent implements OnInit {
+export class ScoreboardComponent  {
   score1 = 0;
   score2 = 0;
   currentSound: number = 0; // номер счета в произношении счета
@@ -33,23 +32,9 @@ export class ScoreboardComponent implements OnInit {
 
 
 
-  constructor(private audioCacheService: AudioCacheService, private playlistService: PlaylistService) {
+  constructor( private playlistService: PlaylistService) {
 
     this.curState.reset();
-  }
-
-  ngOnInit(): void {
-    const audioUrls = [
-      'audio/whistle.ogg',
-      'audio/win.ogg',
-      'audio/controlball.ogg'
-    ];
-
-    // Добавляем файлы от 0.ogg до 31.ogg
-    for (let i = 0; i <= 31; i++) {
-      audioUrls.push(`audio/${i}.ogg`);
-    }
-    this.audioCacheService.preloadAudioFiles(audioUrls);
   }
 
   incrementScore1() {
@@ -65,17 +50,20 @@ export class ScoreboardComponent implements OnInit {
   }
 
   resetScores() {
-    this.score1 = 0;
-    this.score2 = 0;
+    if(this.score2 != 0 || this.score1 != 0) {
+      this.score1 = 0;
+      this.score2 = 0;
 
-    this.playScore1 = 0;
-    this.playScore2 = 0;
+      this.playScore1 = 0;
+      this.playScore2 = 0;
 
-    this.currentSound = 0;
-    this.whistlePlay = false;
-    this.matchOver = false;
+      this.currentSound = 0;
+      this.whistlePlay = false;
+      this.matchOver = false;
 
-    this.curState.reset();
+      this.curState.reset();
+      this.rotateScore = !this.rotateScore;
+    }
 
   }
 
@@ -108,12 +96,14 @@ export class ScoreboardComponent implements OnInit {
     this.matchOver = this.isMatchOver();
     if(this.isMatchOver()) {
       this.playlistService.addToPlaylist(`audio/win.ogg`);
+      // Запустить функцию reset через 30 секунд
+      setTimeout(() => {
+        this.resetScores();
+      }, 30000);
     }
   }
 
   private playScore(number: number) {
-    /*this.audio.src = `audio/${number}.ogg`;
-    this.audio.play();*/
     this.playlistService.addToPlaylist(`audio/${number}.ogg`);
   }
 
@@ -151,9 +141,13 @@ export class ScoreboardComponent implements OnInit {
     if(!this.whistleFirstClick) {
       this.whistleFirstClick = true;
       this.clickTimeout = setTimeout(() => {
-        this.whistlePlay = true;
-        this.whistleFirstClick = false;
-        this.audioCacheService.playAudio(`audio/whistle.ogg`)
+          this.whistlePlay = true;
+          this.whistleFirstClick = false;
+          this.playlistService.addToPlaylist(`audio/whistle.ogg`);
+          if(this.score1 == 0 && this.score2 == 0) {
+            this.playScore(0);
+            this.playScore(0);
+          }
 
       }, this.delay);
     } else {

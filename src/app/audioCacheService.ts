@@ -6,7 +6,20 @@ import { Injectable } from '@angular/core';
 export class AudioCacheService {
   private audioCache: Map<string, HTMLAudioElement> = new Map();
 
-  constructor() {}
+  constructor() {
+
+    const audioUrls = [
+      'audio/whistle.ogg',
+      'audio/win.ogg',
+      'audio/controlball.ogg'
+    ];
+
+    // Добавляем файлы от 0.ogg до 31.ogg
+    for (let i = 0; i <= 31; i++) {
+      audioUrls.push(`audio/${i}.ogg`);
+    }
+    this.preloadAudioFiles(audioUrls);
+  }
 
   preloadAudioFiles(urls: string[]): void {
     urls.forEach((url) => {
