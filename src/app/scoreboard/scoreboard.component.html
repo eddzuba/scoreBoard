@@ -1,7 +1,6 @@
 <div class="scoreboard" cdkDropList  (cdkDropListDropped)="dropped($event)">
   <div (click)="resetScores()" class="buttons">
-     <div [ngClass]="rotateScore ? 'judge' : 'judgeBottom'" class="judge"></div>
-    <img src="round.png" height="35px" class="round" (click)="roundClick($event)"/>
+     <div [ngClass]="rotateScore ? 'judge' : 'judgeBottom'" class="judge" (click)="roundClick($event)"></div>
   </div>
   <div class="allScore" (click)="whistle()">
       <div class="team" cdkDrag>

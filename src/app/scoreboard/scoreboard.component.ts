@@ -3,6 +3,7 @@ import { CdkDragDrop, DragDropModule} from "@angular/cdk/drag-drop";
 import {CommonModule} from "@angular/common";
 import {GameState} from "../gameState/gameStates";
 import {PlaylistService} from "../playlistService";
+import {CONTROLBALL, WHISTLE, WIN} from "./constants";
 
 @Component({
   selector: 'scoreboard',
@@ -90,12 +91,12 @@ export class ScoreboardComponent  {
 
     this.isControlBall = this.isControlBallScore()
     if (this.isControlBall) {
-      this.playlistService.addToPlaylist(`audio/controlball.ogg`);
+      this.playlistService.addToPlaylist(CONTROLBALL);
     }
 
     this.matchOver = this.isMatchOver();
     if(this.isMatchOver()) {
-      this.playlistService.addToPlaylist(`audio/win.ogg`);
+      this.playlistService.addToPlaylist(WIN);
       // Запустить функцию reset через 30 секунд
       setTimeout(() => {
         this.resetScores();
@@ -143,7 +144,7 @@ export class ScoreboardComponent  {
       this.clickTimeout = setTimeout(() => {
           this.whistlePlay = true;
           this.whistleFirstClick = false;
-          this.playlistService.addToPlaylist(`audio/whistle.ogg`);
+          this.playlistService.addToPlaylist(WHISTLE);
           if(this.score1 == 0 && this.score2 == 0) {
             this.playScore(0);
             this.playScore(0);
