@@ -1,9 +1,10 @@
-import {Component, OnInit} from '@angular/core';
-import { CdkDragDrop, DragDropModule} from "@angular/cdk/drag-drop";
-import {CommonModule} from "@angular/common";
-import {GameState} from "../gameState/gameStates";
-import {PlaylistService} from "../playlistService";
-import {CONTROLBALL, WHISTLE, WIN} from "./constants";
+import { Component } from '@angular/core';
+import { CdkDragDrop, DragDropModule } from '@angular/cdk/drag-drop';
+import { CommonModule } from '@angular/common';
+import { GameState } from '../gameState/gameStates';
+import {CONTROLBALL, PAUSE, WHISTLE, WIN} from "./constants";
+import { TelegramService } from '../services/telegram.service';
+import { PlaylistService } from '../services/playlist.service';
 
 @Component({
   selector: 'scoreboard',
@@ -31,9 +32,9 @@ export class ScoreboardComponent  {
   private delay: number = 500; // Задержка для определения двойного клика
   private whistleFirstClick: boolean = false;
 
-
-
-  constructor( private playlistService: PlaylistService) {
+  constructor(
+    private playlistService: PlaylistService,
+    private telegram: TelegramService) {
 
     this.curState.reset();
   }
@@ -86,6 +87,7 @@ export class ScoreboardComponent  {
       this.playScore1 = this.score2;
       this.playScore2 = this.score1;
     }
+    this.playlistService.addToPlaylist(PAUSE);
     this.playScore(this.playScore1);
     this.playScore(this.playScore2);
 
@@ -99,8 +101,9 @@ export class ScoreboardComponent  {
       this.playlistService.addToPlaylist(WIN);
       // Запустить функцию reset через 30 секунд
       setTimeout(() => {
+        this.telegram.saveScore();
         this.resetScores();
-      }, 30000);
+      }, 20000);
     }
   }
 
@@ -144,6 +147,9 @@ export class ScoreboardComponent  {
       this.clickTimeout = setTimeout(() => {
           this.whistlePlay = true;
           this.whistleFirstClick = false;
+          // пауза для установления соединения с колонкой
+          // иногда уходит в энергосберегающий режим
+          this.playlistService.addToPlaylist(PAUSE);
           this.playlistService.addToPlaylist(WHISTLE);
           if(this.score1 == 0 && this.score2 == 0) {
             this.playScore(0);

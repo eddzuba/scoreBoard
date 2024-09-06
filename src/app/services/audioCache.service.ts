@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {CONTROLBALL, WHISTLE, WIN} from "./scoreboard/constants";
+import { CONTROLBALL, PAUSE, WHISTLE, WIN } from "../scoreboard/constants";
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +12,7 @@ export class AudioCacheService {
     const audioUrls = [
       WHISTLE,
       WIN,
+      PAUSE,
       CONTROLBALL
     ];
 

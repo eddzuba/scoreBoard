@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import {AudioCacheService} from "./audioCacheService";
-
+import { AudioCacheService } from './audioCache.service';
 
 @Injectable({
   providedIn: 'root'
