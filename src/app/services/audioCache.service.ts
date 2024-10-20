@@ -28,6 +28,7 @@ export class AudioCacheService {
       if (!this.audioCache.has(url)) {
         const audio = new Audio(url);
         audio.load(); // Загружаем файл
+        audio.preload = "auto";
         this.audioCache.set(url, audio);
       }
     });

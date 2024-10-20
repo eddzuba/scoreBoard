@@ -4,15 +4,19 @@
   </div>
   <div class="allScore" (click)="whistle()">
       <div class="team" cdkDrag>
-1
-        <div id="score1" class="score">{{ rotateScore ? score1 : score2 }}</div>
+
+        <div id="score1" class="score"
+             [ngClass]="setLeft && !(score1 + score2 == 0) ? 'setScore' : ''"
+        >{{ rotateScore ? score1 : score2 }}</div>
 
       </div>
       <div   class="button whistle net">
       </div>
       <div class="team" cdkDrag>
 
-        <div id="score score2" class="score">{{ rotateScore ? score2 : score1  }}</div>
+        <div id="score score2" class="score"
+             [ngClass]="setLeft || (score1 + score2 == 0)? '' : 'setScore'"
+        >{{ rotateScore ? score2 : score1  }}</div>
 
       </div>
   </div>

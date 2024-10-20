@@ -58,4 +58,8 @@ export class PlaylistService {
     }
     this.reset();
   }
+
+  cleanQuery() {
+    this.stop();
+  }
 }

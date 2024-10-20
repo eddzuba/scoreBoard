@@ -25,6 +25,7 @@ export class ScoreboardComponent  {
   isControlBall: boolean = false; //Это контрольный мяч
   matchOver:boolean = false; // Матч завершен
   rotateScore: boolean = false;
+  setLeft: boolean = false; // подача слева
 
   whistlePlay: boolean = false;
 
@@ -41,12 +42,15 @@ export class ScoreboardComponent  {
 
   incrementScore1() {
     this.score1++;
+    this.setLeft = this.rotateScore;
     this.playSound(1);
     this.curState.push( { score1: this.score1, score2: this.score2, serverSide: 1 } );
   }
 
   incrementScore2() {
     this.score2++;
+
+    this.setLeft = !this.rotateScore;
     this.playSound(2);
     this.curState.push( { score1: this.score1, score2: this.score2, serverSide: 2 } );
   }
@@ -87,6 +91,8 @@ export class ScoreboardComponent  {
       this.playScore1 = this.score2;
       this.playScore2 = this.score1;
     }
+
+    this.playlistService.cleanQuery();
     this.playlistService.addToPlaylist(PAUSE);
     this.playScore(this.playScore1);
     this.playScore(this.playScore2);
@@ -177,6 +183,11 @@ export class ScoreboardComponent  {
         if( prevState !== undefined) {
           this.score1 = prevState.score1;
           this.score2 = prevState.score2;
+          this.setLeft = prevState.serverSide == 1;
+          if(!this.rotateScore) {
+            this.setLeft = !this.setLeft;
+          }
+
           this.playSound(prevState.serverSide);
           this.curState.push(prevState);
         }
