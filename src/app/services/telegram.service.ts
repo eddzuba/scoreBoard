@@ -39,4 +39,7 @@ export class TelegramService {
   ready() {
     this.tg.ready();
   }
+  expand(): void {
+    this.tg.expand();
+  }
 }

@@ -47,6 +47,7 @@ export class ScoreboardComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.telegram.expand();
   }
 
     incrementScore1() {
