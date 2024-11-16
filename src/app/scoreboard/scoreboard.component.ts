@@ -47,12 +47,6 @@ export class ScoreboardComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const tg = Telegram.WebApp;
-    // Получаем данные о пользователе
-    this.user = tg.initDataUnsafe?.user;
-    this.chatId = tg.initDataUnsafe?.chat?.id;
-
-    alert(this.user);
   }
 
     incrementScore1() {
@@ -122,7 +116,7 @@ export class ScoreboardComponent implements OnInit {
       this.playlistService.addToPlaylist(WIN);
       // Запустить функцию reset через 30 секунд
       setTimeout(() => {
-        this.telegram.saveScore();
+        // this.telegram.saveScore();
         this.resetScores();
       }, 20000);
     }
@@ -161,11 +155,17 @@ export class ScoreboardComponent implements OnInit {
 
     return false;
   }
-  telegaTest(): void {
-
+  telegramTest(): void {
+      this.sendData();
   }
+
+  sendData() {
+    // отправляем данные в телеграм
+    this.telegram.sendData({ feedback: 'my-massage' });
+  }
+
   whistle() {
-    this.telegaTest();
+    this.telegramTest();
     if(!this.whistleFirstClick) {
       this.whistleFirstClick = true;
       this.clickTimeout = setTimeout(() => {
