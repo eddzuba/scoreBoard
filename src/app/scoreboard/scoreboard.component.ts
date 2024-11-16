@@ -1,10 +1,12 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import { CdkDragDrop, DragDropModule } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
 import { GameState } from '../gameState/gameStates';
 import {CONTROLBALL, PAUSE, WHISTLE, WIN} from "./constants";
 import { TelegramService } from '../services/telegram.service';
 import { PlaylistService } from '../services/playlist.service';
+
+declare const Telegram: any;
 
 @Component({
   selector: 'scoreboard',
@@ -13,7 +15,11 @@ import { PlaylistService } from '../services/playlist.service';
   styleUrls: ['./scoreboard.component.css'],
   imports: [CommonModule, DragDropModule ]
 })
-export class ScoreboardComponent  {
+export class ScoreboardComponent implements OnInit {
+
+  user: any;
+  chatId: number | null = null;
+
   score1 = 0;
   score2 = 0;
   currentSound: number = 0; // номер счета в произношении счета
@@ -40,7 +46,16 @@ export class ScoreboardComponent  {
     this.curState.reset();
   }
 
-  incrementScore1() {
+  ngOnInit(): void {
+    const tg = Telegram.WebApp;
+    // Получаем данные о пользователе
+    this.user = tg.initDataUnsafe?.user;
+    this.chatId = tg.initDataUnsafe?.chat?.id;
+
+    alert(this.user);
+  }
+
+    incrementScore1() {
     this.score1++;
     this.setLeft = this.rotateScore;
     this.playSound(1);
@@ -146,8 +161,11 @@ export class ScoreboardComponent  {
 
     return false;
   }
+  telegaTest(): void {
 
+  }
   whistle() {
+    this.telegaTest();
     if(!this.whistleFirstClick) {
       this.whistleFirstClick = true;
       this.clickTimeout = setTimeout(() => {
