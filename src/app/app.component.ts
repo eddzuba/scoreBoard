@@ -8,7 +8,7 @@ import {TelegramService} from "./services/telegram.service";
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
   standalone: true,
-  imports: [ScoreboardComponent]
+  imports: [ScoreboardComponent, RouterOutlet]
 })
 export class AppComponent {
   telegram = inject(TelegramService);
