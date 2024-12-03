@@ -5,6 +5,8 @@ import { GameState } from '../gameState/gameStates';
 import {CONTROLBALL, PAUSE, WHISTLE, WIN} from "./constants";
 import { TelegramService } from '../services/telegram.service';
 import { PlaylistService } from '../services/playlist.service';
+import { FormsModule } from "@angular/forms";
+import {AudioCacheService} from "../services/audioCache.service";
 
 declare const Telegram: any;
 
@@ -13,9 +15,19 @@ declare const Telegram: any;
   templateUrl: './scoreboard.component.html',
   standalone: true,
   styleUrls: ['./scoreboard.component.css'],
-  imports: [CommonModule, DragDropModule ]
+  imports: [CommonModule, DragDropModule, FormsModule ]
 })
 export class ScoreboardComponent implements OnInit {
+
+  voices = [
+    { name: 'По умолчанию', path: 'default' },
+    { name: 'Борис', path: 'boris' },
+    { name: 'Юля', path: 'julia' },
+    { name: 'Наталья', path: 'natalia' },
+    { name: 'Сергей', path: 'sergey' },
+  ];
+
+  selectedVoice: string = this.voices[0].path; // Устанавливаем значение по умолчанию
 
   user: any;
   chatId: number | null = null;
@@ -41,7 +53,8 @@ export class ScoreboardComponent implements OnInit {
 
   constructor(
     private playlistService: PlaylistService,
-    private telegram: TelegramService) {
+    private telegram: TelegramService,
+    private audioCacheService: AudioCacheService) {
 
     this.curState.reset();
   }
@@ -63,6 +76,15 @@ export class ScoreboardComponent implements OnInit {
     this.setLeft = !this.rotateScore;
     this.playSound(2);
     this.curState.push( { score1: this.score1, score2: this.score2, serverSide: 2 } );
+  }
+
+  onVoiceChange(event: Event): void {
+    // console.log('Выбранный путь голоса:', this.selectedVoice);
+    this.audioCacheService.loadFiles(this.selectedVoice);
+    // Здесь можно обработать изменение пути, например, отправить его в сервис.
+  }
+  onComboBoxClick(event: Event): void {
+    event.stopPropagation(); // Останавливаем всплытие события
   }
 
   resetScores() {
@@ -124,7 +146,7 @@ export class ScoreboardComponent implements OnInit {
   }
 
   private playScore(number: number) {
-    this.playlistService.addToPlaylist(`audio/${number}.ogg`);
+    this.playlistService.addToPlaylist(`${number}.ogg`);
   }
 
   private isControlBallScore() {

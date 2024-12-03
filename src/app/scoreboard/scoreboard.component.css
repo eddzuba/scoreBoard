@@ -108,3 +108,18 @@
   color: #800080 !important;
 
 }
+
+.rotated-combobox {
+  transform: rotate(90deg); /* Поворот на 90 градусов */
+  transform-origin: center; /* Точка вращения */
+  display: inline-block;
+  width: 150px; /* Ширина комбобокса */
+  height: 29px; /* Высота комбобокса */
+  margin-top: 100px;
+  margin-left: -57px;
+}
+
+/* Чтобы текст внутри комбобокса тоже выглядел корректно */
+.rotated-combobox option {
+  transform: rotate(-90deg); /* Вращаем текст обратно */
+}

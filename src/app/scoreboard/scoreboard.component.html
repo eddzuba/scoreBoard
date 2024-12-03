@@ -1,6 +1,11 @@
 <div class="scoreboard" cdkDropList  (cdkDropListDropped)="dropped($event)">
   <div (click)="resetScores()" class="buttons">
      <div [ngClass]="rotateScore ? 'judge' : 'judgeBottom'" class="judge" (click)="roundClick($event)"></div>
+    <select id="voice-select" [(ngModel)]="selectedVoice"
+            (click)="onComboBoxClick($event)"
+            (change)="onVoiceChange($event)" class="rotated-combobox">
+      <option *ngFor="let voice of voices" [value]="voice.path">{{ voice.name }}</option>
+    </select>
   </div>
   <div class="allScore" (click)="whistle()">
       <div class="team" cdkDrag>

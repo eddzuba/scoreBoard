@@ -6,19 +6,24 @@ import { CONTROLBALL, PAUSE, WHISTLE, WIN } from "../scoreboard/constants";
 })
 export class AudioCacheService {
   private audioCache: Map<string, HTMLAudioElement> = new Map();
+  private curVoicePath = 'default'
 
   constructor() {
+    this.loadFiles('default');
+  }
 
+  public loadFiles(path: string) {
+    this.curVoicePath = path;
     const audioUrls = [
-      WHISTLE,
-      WIN,
-      PAUSE,
-      CONTROLBALL
+      'audio/' + this.curVoicePath + '/' + WHISTLE,
+      'audio/' + this.curVoicePath + '/' + WIN,
+      'audio/' + this.curVoicePath + '/' + PAUSE,
+      'audio/' + this.curVoicePath + '/' + CONTROLBALL
     ];
 
     // Добавляем файлы от 0.ogg до 31.ogg
     for (let i = 0; i <= 31; i++) {
-      audioUrls.push(`audio/${i}.ogg`);
+      audioUrls.push('audio/' + this.curVoicePath + `/${i}.ogg`);
     }
     this.preloadAudioFiles(audioUrls);
   }
@@ -35,7 +40,7 @@ export class AudioCacheService {
   }
 
   getAudio(url: string): HTMLAudioElement | undefined {
-    return this.audioCache.get(url);
+    return this.audioCache.get('audio/' + this.curVoicePath + '/' + url);
   }
 
 }
