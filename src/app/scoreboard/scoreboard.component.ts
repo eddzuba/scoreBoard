@@ -25,6 +25,8 @@ export class ScoreboardComponent implements OnInit {
     { name: 'Юля', path: 'julia' },
     { name: 'Наталья', path: 'natalia' },
     { name: 'Сергей', path: 'sergey' },
+    { name: 'SpongeBob', path: 'spongebob' },
+    { name: 'English', path: 'english' },
   ];
 
   selectedVoice: string = this.voices[0].path; // Устанавливаем значение по умолчанию
