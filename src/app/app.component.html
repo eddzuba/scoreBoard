@@ -1,1 +1,11 @@
-<router-outlet></router-outlet>
+<div  class="floating-buttons">
+  <button *ngIf="activeComponent === 'video'" (click)="activeComponent = 'score'" >Счет</button>
+  <button *ngIf="activeComponent === 'score'" (click)="activeComponent = 'video'" >Видео</button>
+</div>
+
+<div *ngIf="activeComponent === 'score'">
+  <scoreboard></scoreboard>
+</div>
+<div *ngIf="activeComponent === 'video'">
+  <app-video></app-video>
+</div>
