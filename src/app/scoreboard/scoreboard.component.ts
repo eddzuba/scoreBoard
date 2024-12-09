@@ -108,7 +108,6 @@ export class ScoreboardComponent implements OnInit {
   }
 
   dropped(event: CdkDragDrop<string[]>): void {
-    alert(event?.distance.x + ' : ' + event?.distance.y);
     if(event?.distance.y > 0) {
       this.incrementScore2();
     } else {
