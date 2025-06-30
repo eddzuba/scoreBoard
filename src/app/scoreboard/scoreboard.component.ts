@@ -7,6 +7,7 @@ import { TelegramService } from '../services/telegram.service';
 import { PlaylistService } from '../services/playlist.service';
 import { FormsModule } from "@angular/forms";
 import {AudioCacheService} from "../services/audioCache.service";
+import { SupabaseService } from '../services/supabase.service';
 
 declare const Telegram: any;
 
@@ -56,7 +57,8 @@ export class ScoreboardComponent implements OnInit {
   constructor(
     private playlistService: PlaylistService,
     private telegram: TelegramService,
-    private audioCacheService: AudioCacheService) {
+    private audioCacheService: AudioCacheService,
+    private supabaseService: SupabaseService) {
 
     this.curState.reset();
   }
@@ -70,6 +72,7 @@ export class ScoreboardComponent implements OnInit {
     this.setLeft = this.rotateScore;
     this.playSound(1);
     this.curState.push( { score1: this.score1, score2: this.score2, serverSide: 1 } );
+    this.syncCurrentScore();
   }
 
   incrementScore2() {
@@ -78,6 +81,7 @@ export class ScoreboardComponent implements OnInit {
     this.setLeft = !this.rotateScore;
     this.playSound(2);
     this.curState.push( { score1: this.score1, score2: this.score2, serverSide: 2 } );
+    this.syncCurrentScore();
   }
 
   onVoiceChange(event: Event): void {
@@ -138,6 +142,8 @@ export class ScoreboardComponent implements OnInit {
     this.matchOver = this.isMatchOver();
     if(this.isMatchOver()) {
       this.playlistService.addToPlaylist(WIN);
+      // Sync final score when match is over
+      this.syncMatchComplete();
       // Запустить функцию reset через 30 секунд
       setTimeout(() => {
         // this.telegram.saveScore();
@@ -235,5 +241,49 @@ export class ScoreboardComponent implements OnInit {
         }
 
     }
+  }
+
+  /**
+   * Sync current score to Supabase - optimistic and error ignoring
+   */
+  private syncCurrentScore(): void {
+    // Map scores according to UI display logic (accounting for rotateScore)
+    const leftScore = this.rotateScore ? this.score1 : this.score2;
+    const rightScore = this.rotateScore ? this.score2 : this.score1;
+
+    const setScore = this.supabaseService.createSetScore(
+      leftScore,  // left_score (what's displayed on left in UI)
+      rightScore  // right_score (what's displayed on right in UI)
+    );
+
+    // Fire and forget - don't await to avoid blocking UI
+    this.supabaseService.syncSetScore(setScore).catch(() => {
+      // Ignore errors silently to keep main system stable
+    });
+  }
+
+  /**
+   * Sync match completion data to global scores
+   */
+  private syncMatchComplete(): void {
+    // Map scores according to UI display logic (accounting for rotateScore)
+    const leftScore = this.rotateScore ? this.score1 : this.score2;
+    const rightScore = this.rotateScore ? this.score2 : this.score1;
+
+    // Determine winner based on UI display
+    const leftWon = leftScore > rightScore;
+    const rightWon = rightScore > leftScore;
+
+    // For now, we'll track single sets. In future this could be extended
+    // to track multiple sets per day
+    const globalScore = this.supabaseService.createGlobalScore(
+      leftWon ? 1 : 0,  // left wins
+      rightWon ? 1 : 0  // right wins
+    );
+
+    // Fire and forget - don't await to avoid blocking UI
+    this.supabaseService.syncGlobalScore(globalScore).catch(() => {
+      // Ignore errors silently to keep main system stable
+    });
   }
 }
