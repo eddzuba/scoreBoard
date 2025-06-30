@@ -7,6 +7,7 @@ import { TelegramService } from '../services/telegram.service';
 import { PlaylistService } from '../services/playlist.service';
 import { FormsModule } from "@angular/forms";
 import {AudioCacheService} from "../services/audioCache.service";
+import { SupabaseService } from '../services/supabase.service';
 
 declare const Telegram: any;
 
@@ -49,6 +50,10 @@ export class ScoreboardComponent implements OnInit {
 
   whistlePlay: boolean = false;
 
+  // Daily totals tracking
+  dailyLeftWins: number = 0;
+  dailyRightWins: number = 0;
+
   private clickTimeout: any;
   private delay: number = 500; // Задержка для определения двойного клика
   private whistleFirstClick: boolean = false;
@@ -56,13 +61,37 @@ export class ScoreboardComponent implements OnInit {
   constructor(
     private playlistService: PlaylistService,
     private telegram: TelegramService,
-    private audioCacheService: AudioCacheService) {
+    private audioCacheService: AudioCacheService,
+    private supabaseService: SupabaseService) {
 
     this.curState.reset();
   }
 
   ngOnInit(): void {
     this.telegram.expand();
+    this.loadDailyTotals();
+  }
+
+  /**
+   * Load daily totals from Supabase on component init
+   */
+  private async loadDailyTotals(): Promise<void> {
+    try {
+      const dailyTotals = await this.supabaseService.getDailyTotals();
+      if (dailyTotals) {
+        this.dailyLeftWins = dailyTotals.left_wins || 0;
+        this.dailyRightWins = dailyTotals.right_wins || 0;
+      } else {
+        // No data for today yet
+        this.dailyLeftWins = 0;
+        this.dailyRightWins = 0;
+      }
+    } catch (error) {
+      // Error loading - start with 0:0
+      console.warn('[Component] Failed to load daily totals:', error);
+      this.dailyLeftWins = 0;
+      this.dailyRightWins = 0;
+    }
   }
 
     incrementScore1() {
@@ -70,6 +99,7 @@ export class ScoreboardComponent implements OnInit {
     this.setLeft = this.rotateScore;
     this.playSound(1);
     this.curState.push( { score1: this.score1, score2: this.score2, serverSide: 1 } );
+    this.syncCurrentScore();
   }
 
   incrementScore2() {
@@ -78,6 +108,7 @@ export class ScoreboardComponent implements OnInit {
     this.setLeft = !this.rotateScore;
     this.playSound(2);
     this.curState.push( { score1: this.score1, score2: this.score2, serverSide: 2 } );
+    this.syncCurrentScore();
   }
 
   onVoiceChange(event: Event): void {
@@ -138,6 +169,8 @@ export class ScoreboardComponent implements OnInit {
     this.matchOver = this.isMatchOver();
     if(this.isMatchOver()) {
       this.playlistService.addToPlaylist(WIN);
+      // Sync final score when match is over
+      this.syncMatchComplete();
       // Запустить функцию reset через 30 секунд
       setTimeout(() => {
         // this.telegram.saveScore();
@@ -235,5 +268,73 @@ export class ScoreboardComponent implements OnInit {
         }
 
     }
+  }
+
+  /**
+   * Sync current score to Supabase - optimistic and error ignoring
+   */
+  private syncCurrentScore(): void {
+    // Map scores according to UI display logic (accounting for rotateScore)
+    const leftScore = this.rotateScore ? this.score1 : this.score2;
+    const rightScore = this.rotateScore ? this.score2 : this.score1;
+
+    const setScore = this.supabaseService.createSetScore(
+      leftScore,  // left_score (what's displayed on left in UI)
+      rightScore  // right_score (what's displayed on right in UI)
+    );
+
+    // Fire and forget - don't await to avoid blocking UI
+    this.supabaseService.syncSetScore(setScore).catch(() => {
+      // Ignore errors silently to keep main system stable
+    });
+  }
+
+    /**
+   * Sync match completion data to global scores
+   */
+  private syncMatchComplete(): void {
+    // Map scores according to UI display logic (accounting for rotateScore)
+    const leftScore = this.rotateScore ? this.score1 : this.score2;
+    const rightScore = this.rotateScore ? this.score2 : this.score1;
+
+    // Determine winner based on UI display
+    const leftWon = leftScore > rightScore;
+    const rightWon = rightScore > leftScore;
+
+    // Update local daily totals immediately for UI responsiveness
+    if (leftWon) {
+      this.dailyLeftWins++;
+    } else if (rightWon) {
+      this.dailyRightWins++;
+    }
+
+    // Increment daily wins in database - fire and forget
+    this.supabaseService.incrementDailyWins(leftWon, rightWon).catch(() => {
+      // If sync fails, revert local changes
+      if (leftWon) {
+        this.dailyLeftWins--;
+      } else if (rightWon) {
+        this.dailyRightWins--;
+      }
+      console.warn('[Component] Failed to sync daily wins, reverted local changes');
+    });
+  }
+
+  /**
+   * Get current daily totals for UI display
+   */
+  getDailyLeftWins(): number {
+    return this.dailyLeftWins;
+  }
+
+  getDailyRightWins(): number {
+    return this.dailyRightWins;
+  }
+
+  /**
+   * Get current daily totals as formatted string for display
+   */
+  getDailyTotalsString(): string {
+    return `${this.dailyLeftWins} — ${this.dailyRightWins}`;
   }
 }
