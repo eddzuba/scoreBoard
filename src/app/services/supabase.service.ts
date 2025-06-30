@@ -75,6 +75,76 @@ export class SupabaseService {
   }
 
   /**
+   * Increment daily totals by reading current values and incrementing - optimistic and error ignoring
+   * This properly increments the win count instead of overwriting
+   */
+  async incrementDailyWins(leftWin: boolean, rightWin: boolean): Promise<void> {
+    if (!this.isEnabled) {
+      return; // Silently skip if not configured
+    }
+
+    try {
+      const today = this.getCurrentDay();
+
+      // Try to get current daily totals
+      const { data: currentTotals, error: selectError } = await this.supabase
+        .from('daily_totals')
+        .select('left_wins, right_wins')
+        .eq('day', today)
+        .single();
+
+      let newLeftWins = leftWin ? 1 : 0;
+      let newRightWins = rightWin ? 1 : 0;
+
+      // If we found existing data, increment it
+      if (!selectError && currentTotals) {
+        newLeftWins = (currentTotals.left_wins || 0) + (leftWin ? 1 : 0);
+        newRightWins = (currentTotals.right_wins || 0) + (rightWin ? 1 : 0);
+        console.log(`[Supabase] Incrementing daily wins: ${currentTotals.left_wins} + ${leftWin ? 1 : 0} = ${newLeftWins}, ${currentTotals.right_wins} + ${rightWin ? 1 : 0} = ${newRightWins}`);
+      } else {
+        console.log('[Supabase] No existing daily totals, creating first entry');
+      }
+
+      // Upsert the new totals
+      const globalScore = this.createGlobalScore(newLeftWins, newRightWins);
+      await this.syncGlobalScore(globalScore);
+
+    } catch (error) {
+      console.warn('[Supabase] ❌ increment daily wins FAILED:', error);
+      // Ultimate fallback - just sync as if it's the first win
+      const globalScore = this.createGlobalScore(leftWin ? 1 : 0, rightWin ? 1 : 0);
+      await this.syncGlobalScore(globalScore);
+    }
+  }
+
+  /**
+   * Get current daily totals - for component to display
+   */
+  async getDailyTotals(): Promise<GlobalScore | null> {
+    if (!this.isEnabled) {
+      return null;
+    }
+
+    try {
+      const { data, error } = await this.supabase
+        .from('daily_totals')
+        .select('*')
+        .eq('day', this.getCurrentDay())
+        .single();
+
+      if (error) {
+        console.warn('[Supabase] ❌ getDailyTotals FAILED:', error);
+        return null;
+      }
+
+      return data;
+    } catch (error) {
+      console.warn('[Supabase] ❌ getDailyTotals FAILED (catch):', error);
+      return null;
+    }
+  }
+
+  /**
    * Check if the service is properly configured
    */
   isConfigured(): boolean {

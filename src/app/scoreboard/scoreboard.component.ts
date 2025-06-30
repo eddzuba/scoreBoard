@@ -50,6 +50,10 @@ export class ScoreboardComponent implements OnInit {
 
   whistlePlay: boolean = false;
 
+  // Daily totals tracking
+  dailyLeftWins: number = 0;
+  dailyRightWins: number = 0;
+
   private clickTimeout: any;
   private delay: number = 500; // Задержка для определения двойного клика
   private whistleFirstClick: boolean = false;
@@ -65,6 +69,29 @@ export class ScoreboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.telegram.expand();
+    this.loadDailyTotals();
+  }
+
+  /**
+   * Load daily totals from Supabase on component init
+   */
+  private async loadDailyTotals(): Promise<void> {
+    try {
+      const dailyTotals = await this.supabaseService.getDailyTotals();
+      if (dailyTotals) {
+        this.dailyLeftWins = dailyTotals.left_wins || 0;
+        this.dailyRightWins = dailyTotals.right_wins || 0;
+      } else {
+        // No data for today yet
+        this.dailyLeftWins = 0;
+        this.dailyRightWins = 0;
+      }
+    } catch (error) {
+      // Error loading - start with 0:0
+      console.warn('[Component] Failed to load daily totals:', error);
+      this.dailyLeftWins = 0;
+      this.dailyRightWins = 0;
+    }
   }
 
     incrementScore1() {
@@ -262,7 +289,7 @@ export class ScoreboardComponent implements OnInit {
     });
   }
 
-  /**
+    /**
    * Sync match completion data to global scores
    */
   private syncMatchComplete(): void {
@@ -274,16 +301,40 @@ export class ScoreboardComponent implements OnInit {
     const leftWon = leftScore > rightScore;
     const rightWon = rightScore > leftScore;
 
-    // For now, we'll track single sets. In future this could be extended
-    // to track multiple sets per day
-    const globalScore = this.supabaseService.createGlobalScore(
-      leftWon ? 1 : 0,  // left wins
-      rightWon ? 1 : 0  // right wins
-    );
+    // Update local daily totals immediately for UI responsiveness
+    if (leftWon) {
+      this.dailyLeftWins++;
+    } else if (rightWon) {
+      this.dailyRightWins++;
+    }
 
-    // Fire and forget - don't await to avoid blocking UI
-    this.supabaseService.syncGlobalScore(globalScore).catch(() => {
-      // Ignore errors silently to keep main system stable
+    // Increment daily wins in database - fire and forget
+    this.supabaseService.incrementDailyWins(leftWon, rightWon).catch(() => {
+      // If sync fails, revert local changes
+      if (leftWon) {
+        this.dailyLeftWins--;
+      } else if (rightWon) {
+        this.dailyRightWins--;
+      }
+      console.warn('[Component] Failed to sync daily wins, reverted local changes');
     });
+  }
+
+  /**
+   * Get current daily totals for UI display
+   */
+  getDailyLeftWins(): number {
+    return this.dailyLeftWins;
+  }
+
+  getDailyRightWins(): number {
+    return this.dailyRightWins;
+  }
+
+  /**
+   * Get current daily totals as formatted string for display
+   */
+  getDailyTotalsString(): string {
+    return `${this.dailyLeftWins} — ${this.dailyRightWins}`;
   }
 }
