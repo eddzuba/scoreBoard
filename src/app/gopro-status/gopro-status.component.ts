@@ -76,7 +76,7 @@ import { GoProBleService } from "../services/gopro-ble.service";
   styles: [`
     .highlight{
       transform: rotate(90deg) translateY(-54%)  translateX(-6%);
-      width: 530px !important;
+      width: 375px !important;
       height: 60px!important;
       transform-origin: left;
       background: gray !important;

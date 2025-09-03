@@ -14,14 +14,15 @@
 /*  flex-direction: column;
   align-items: center;*/
  /* margin-bottom: 20px;*/
-  padding-left: 10px;
+  padding-left: 33px;
   flex-grow: 2;
 }
 
 .score {
   font-size: 16em;
 /*  margin: 5px 0;*/
-  transform: rotate(90deg);
+  transform: rotate(90deg) translateX(-120px) translateY(-100px);
+  transform-origin: left;
 }
 
 .button {
@@ -114,10 +115,10 @@
 }
 
 .rotated-combobox {
-  transform: rotate(90deg) translateX(300%); /* Поворот на 90 градусов */
+  transform: rotate(90deg) translateX(250%) translateY(-25px); /* Поворот на 90 градусов */
   transform-origin: center; /* Точка вращения */
   display: inline-block;
-  width: 150px; /* Ширина комбобокса */
+  width: 118px; /* Ширина комбобокса */
   height: 29px; /* Высота комбобокса */
   margin-top: 100px;
   margin-left: -57px;
