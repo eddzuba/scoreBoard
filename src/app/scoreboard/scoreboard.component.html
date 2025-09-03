@@ -1,5 +1,5 @@
 <div class="scoreboard" cdkDropList  (cdkDropListDropped)="dropped($event)">
-  <div (click)="resetScores()" class="buttons">
+  <div  class="buttons">
      <div [ngClass]="rotateScore ? 'judge' : 'judgeBottom'" class="judge" (click)="roundClick($event)"></div>
 
     <app-gopro-status></app-gopro-status>
