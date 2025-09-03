@@ -1,6 +1,8 @@
 <div class="scoreboard" cdkDropList  (cdkDropListDropped)="dropped($event)">
   <div (click)="resetScores()" class="buttons">
      <div [ngClass]="rotateScore ? 'judge' : 'judgeBottom'" class="judge" (click)="roundClick($event)"></div>
+
+    <app-gopro-status></app-gopro-status>
     <select id="voice-select" [(ngModel)]="selectedVoice"
             (click)="onComboBoxClick($event)"
             (change)="onVoiceChange($event)" class="rotated-combobox">

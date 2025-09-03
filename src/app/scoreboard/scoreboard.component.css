@@ -11,9 +11,10 @@
 
 .team {
   display: flex;
-  flex-direction: column;
-  align-items: center;
+/*  flex-direction: column;
+  align-items: center;*/
  /* margin-bottom: 20px;*/
+  padding-left: 10px;
   flex-grow: 2;
 }
 
@@ -66,10 +67,13 @@
 }
 
 .buttons {
-  width: 35px;
+  width: 85px;
   cursor: pointer;
   height: 100%;
-  background-color: mediumseagreen;
+  background-color: mediumseagreen; /* green strip */
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
 }
  .round {
    float: right;
@@ -88,14 +92,14 @@
 }
 
 .judge {
-  width: 35px;
+  width: 85px;
   height: 40px;
   background-color: black;
   margin-top: 10px;
 }
 
 .judgeBottom {
-  width: 35px;
+  width: 85px;
   height: 40px;
   background-color: black;
   margin-top: 10px;
@@ -110,7 +114,7 @@
 }
 
 .rotated-combobox {
-  transform: rotate(90deg); /* Поворот на 90 градусов */
+  transform: rotate(90deg) translateX(300%); /* Поворот на 90 градусов */
   transform-origin: center; /* Точка вращения */
   display: inline-block;
   width: 150px; /* Ширина комбобокса */

@@ -1,11 +1,13 @@
+<!--
 <div  class="floating-buttons">
   <button *ngIf="activeComponent === 'video'" (click)="activeComponent = 'score'" >Score</button>
   <button *ngIf="activeComponent === 'score'" (click)="activeComponent = 'video'" >Video</button>
 </div>
+-->
 
 <div *ngIf="activeComponent === 'score'" style="height: 100%;">
   <scoreboard></scoreboard>
 </div>
-<div *ngIf="activeComponent === 'video'">
+<!--<div *ngIf="activeComponent === 'video'">
   <app-video></app-video>
-</div>
+</div>-->

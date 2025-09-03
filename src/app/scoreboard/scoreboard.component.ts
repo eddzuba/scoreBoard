@@ -7,6 +7,8 @@ import { TelegramService } from '../services/telegram.service';
 import { PlaylistService } from '../services/playlist.service';
 import { FormsModule } from "@angular/forms";
 import {AudioCacheService} from "../services/audioCache.service";
+import { GoProBleService } from '../services/gopro-ble.service';
+import {GoProStatusComponent} from "../gopro-status/gopro-status.component";
 
 declare const Telegram: any;
 
@@ -15,9 +17,10 @@ declare const Telegram: any;
   templateUrl: './scoreboard.component.html',
   standalone: true,
   styleUrls: ['./scoreboard.component.css'],
-  imports: [CommonModule, DragDropModule, FormsModule ]
+  imports: [CommonModule, DragDropModule, FormsModule, GoProStatusComponent]
 })
 export class ScoreboardComponent implements OnInit {
+
 
   voices = [
     { name: 'По умолчанию', path: 'default' },
@@ -56,7 +59,8 @@ export class ScoreboardComponent implements OnInit {
   constructor(
     private playlistService: PlaylistService,
     private telegram: TelegramService,
-    private audioCacheService: AudioCacheService) {
+    private audioCacheService: AudioCacheService,
+    public svc: GoProBleService) {
 
     this.curState.reset();
   }
@@ -236,4 +240,8 @@ export class ScoreboardComponent implements OnInit {
 
     }
   }
+
+
+
+
 }
