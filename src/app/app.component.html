@@ -2,12 +2,14 @@
 <div  class="floating-buttons">
   <button *ngIf="isFullscreen" (click)="toggleFullscreen()" >
     <svg *ngIf="isFullscreen" class="icon" viewBox="0 0 24 24">
-      <path d="M6 16h4v2H4v-6h2v4zm8 2h4v-4h2v6h-6v-2zm4-10h-4V6h6v6h-2V8zm-10-2v4H6V4h6v2H8z"/>
+      <path d="M7 14h2v3h3v2H7v-5zm10 0v5h-5v-2h3v-3h2zM7 5h5v2H9v3H7V5zm10 0v5h-2V7h-3V5h5z"/>
     </svg>
   </button>
   <button *ngIf="!isFullscreen " (click)="toggleFullscreen()" >
-    <svg *ngIf="!isFullscreen" class="icon" viewBox="0 0 24 24">
-      <path d="M4 4h6v2H6v4H4V4zm10 0h6v6h-2V6h-4V4zm6 10v6h-6v-2h4v-4h2zm-16 6v-6h2v4h4v2H4z"/>
+    <svg *ngIf="!isFullscreen"  xmlns="http://www.w3.org/2000/svg"
+         height="24px" viewBox="0 -960 960 960"
+         width="24px" fill="#e3e3e3">
+      <path d="M140-140v-300h60v198.23L718.23-760H520v-60h300v300h-60v-198.23L241.77-200H440v60H140Z"/>
     </svg>
   </button>
 </div>
