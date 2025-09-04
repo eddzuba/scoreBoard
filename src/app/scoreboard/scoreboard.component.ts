@@ -9,6 +9,7 @@ import { FormsModule } from "@angular/forms";
 import {AudioCacheService} from "../services/audioCache.service";
 import { GoProBleService } from '../services/gopro-ble.service';
 import {GoProStatusComponent} from "../gopro-status/gopro-status.component";
+import { BehaviorSubject, Subject, interval, Subscription } from 'rxjs';
 
 declare const Telegram: any;
 
@@ -60,7 +61,7 @@ export class ScoreboardComponent implements OnInit {
     private playlistService: PlaylistService,
     private telegram: TelegramService,
     private audioCacheService: AudioCacheService,
-    public svc: GoProBleService) {
+    public goProServ: GoProBleService) {
 
     this.curState.reset();
   }
@@ -69,7 +70,7 @@ export class ScoreboardComponent implements OnInit {
     this.telegram.expand();
   }
 
-    incrementScore1() {
+  incrementScore1() {
     this.score1++;
     this.setLeft = this.rotateScore;
     this.playSound(1);
@@ -112,10 +113,18 @@ export class ScoreboardComponent implements OnInit {
   }
 
   dropped(event: CdkDragDrop<string[]>): void {
-    if(event?.distance.y > 0) {
-      this.incrementScore2();
+    console.log(event.distance);
+    if ( Math.abs(event?.distance.y) > Math.abs(event?.distance.x)) {
+      if (event?.distance.y > 0) {
+        this.incrementScore2();
+      } else {
+        this.incrementScore1();
+      }
     } else {
-      this.incrementScore1();
+      if((this.goProServ.device$.getValue()?.isRecording === true)
+          && this.goProServ.connected$.getValue()) {
+           this.goProServ.onHighlightClick();
+      }
     }
 
   }

@@ -162,48 +162,12 @@ import { GoProBleService } from "../services/gopro-ble.service";
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GoProStatusComponent {
-  private sleep(ms: number) { return new Promise<void>(r => setTimeout(r, ms)); }
   isPressing = false;
-  constructor(public g: GoProBleService) {}
+
+   constructor(public g: GoProBleService) {}
 
   async onHighlightClick() {
-    // trigger visual press animation
-    this.isPressing = false; // restart if already true
-    queueMicrotask(() => this.isPressing = true);
-
-    // Stop recording, wait for it to stop, then start again
-    try {
-      // Only act if connected; UI already hides button when not recording
-      const connected = await this.g.connected$.getValue?.() ?? this.g.connected$.value;
-      if (!connected) return;
-
-      await this.g.stop();
-
-      // Wait until device$.isRecording becomes false (with a timeout safety)
-      await new Promise<void>((resolve, reject) => {
-        const timeout = setTimeout(() => { cleanup(); reject(new Error('Stop timeout')); }, 8000);
-        const sub = this.g.device$.subscribe(d => {
-          if (d && d.isRecording === false) { cleanup(); resolve(); }
-        });
-        const cleanup = () => { clearTimeout(timeout); sub.unsubscribe(); };
-      });
-
-      // Small delay to ensure camera is ready
-      await this.sleep(300);
-
-      await this.g.record();
-
-      // Optionally wait until recording resumes (best-effort, short timeout)
-      await new Promise<void>((resolve) => {
-        const timeout = setTimeout(() => { cleanup(); resolve(); }, 3000);
-        const sub = this.g.device$.subscribe(d => {
-          if (d && d.isRecording === true) { cleanup(); resolve(); }
-        });
-        const cleanup = () => { clearTimeout(timeout); sub.unsubscribe(); };
-      });
-    } catch (e) {
-      console.error('Highlight stop/restart failed:', e);
-    }
+    await this.g.onHighlightClick();
   }
 
   onAnimationEnd(ev: AnimationEvent) {
