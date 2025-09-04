@@ -1,9 +1,17 @@
-<!--
+
 <div  class="floating-buttons">
-  <button *ngIf="activeComponent === 'video'" (click)="activeComponent = 'score'" >Score</button>
-  <button *ngIf="activeComponent === 'score'" (click)="activeComponent = 'video'" >Video</button>
+  <button *ngIf="isFullscreen" (click)="toggleFullscreen()" >
+    <svg *ngIf="isFullscreen" class="icon" viewBox="0 0 24 24">
+      <path d="M6 16h4v2H4v-6h2v4zm8 2h4v-4h2v6h-6v-2zm4-10h-4V6h6v6h-2V8zm-10-2v4H6V4h6v2H8z"/>
+    </svg>
+  </button>
+  <button *ngIf="!isFullscreen " (click)="toggleFullscreen()" >
+    <svg *ngIf="!isFullscreen" class="icon" viewBox="0 0 24 24">
+      <path d="M4 4h6v2H6v4H4V4zm10 0h6v6h-2V6h-4V4zm6 10v6h-6v-2h4v-4h2zm-16 6v-6h2v4h4v2H4z"/>
+    </svg>
+  </button>
 </div>
--->
+
 
 <div *ngIf="activeComponent === 'score'" style="height: 100%;">
   <scoreboard></scoreboard>

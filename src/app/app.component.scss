@@ -11,6 +11,8 @@ scoreboard {
   transform: translateY(-50%); /* Центрирование блока по вертикали */
   z-index: 1000;
 
+
+
   button {
     writing-mode: vertical-rl; /* Перевод текста в вертикальный режим */
     transform: rotate(0deg); /* Поворот текста в правильное положение */
@@ -23,6 +25,9 @@ scoreboard {
     cursor: pointer;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     transition: background-color 0.3s ease;
+
+    height: 50px !important;
+    width: 50px !important;
 
     &:hover {
       background-color: #0056b3;
