@@ -6,6 +6,8 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { GoProBleService } from "../services/gopro-ble.service";
+import {CAMERA} from "../scoreboard/constants";
+import {PlaylistService} from "../services/playlist.service";
 
 
 @Component({
@@ -164,9 +166,10 @@ import { GoProBleService } from "../services/gopro-ble.service";
 export class GoProStatusComponent {
   isPressing = false;
 
-   constructor(public g: GoProBleService) {}
+   constructor(public g: GoProBleService,  private playlistService: PlaylistService,) {}
 
   async onHighlightClick() {
+    this.playlistService.addToPlaylist(CAMERA);
     await this.g.onHighlightClick();
   }
 

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CONTROLBALL, PAUSE, WHISTLE, WIN } from "../scoreboard/constants";
+import { CONTROLBALL, PAUSE, WHISTLE, WIN , CAMERA} from "../scoreboard/constants";
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +18,9 @@ export class AudioCacheService {
       'audio/' + this.curVoicePath + '/' + WHISTLE,
       'audio/' + this.curVoicePath + '/' + WIN,
       'audio/' + this.curVoicePath + '/' + PAUSE,
-      'audio/' + this.curVoicePath + '/' + CONTROLBALL
+      'audio/' + this.curVoicePath + '/' + CONTROLBALL,
+      'audio/' + this.curVoicePath + '/' + CAMERA,
+
     ];
 
     // Добавляем файлы от 0.ogg до 31.ogg

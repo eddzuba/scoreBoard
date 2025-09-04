@@ -2,14 +2,14 @@ import {Component, OnInit} from '@angular/core';
 import { CdkDragDrop, DragDropModule } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
 import { GameState } from '../gameState/gameStates';
-import {CONTROLBALL, PAUSE, WHISTLE, WIN} from "./constants";
+import {CONTROLBALL, PAUSE, WHISTLE, WIN, CAMERA} from "./constants";
 import { TelegramService } from '../services/telegram.service';
 import { PlaylistService } from '../services/playlist.service';
 import { FormsModule } from "@angular/forms";
 import {AudioCacheService} from "../services/audioCache.service";
 import { GoProBleService } from '../services/gopro-ble.service';
 import {GoProStatusComponent} from "../gopro-status/gopro-status.component";
-import { BehaviorSubject, Subject, interval, Subscription } from 'rxjs';
+
 
 declare const Telegram: any;
 
@@ -123,6 +123,7 @@ export class ScoreboardComponent implements OnInit {
     } else {
       if((this.goProServ.device$.getValue()?.isRecording === true)
           && this.goProServ.connected$.getValue()) {
+           this.playlistService.addToPlaylist(CAMERA);
            this.goProServ.onHighlightClick();
       }
     }
