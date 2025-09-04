@@ -15,6 +15,7 @@ export class AppComponent {
   title = 'scoreBoard';
   activeComponent: 'score' | 'video' = 'score'; // Устанавливаем начальный компонент
   isFullscreen = false;
+  wakeLock: any = null;
 
   constructor() {
     this.telegram.ready();
@@ -28,11 +29,11 @@ export class AppComponent {
     }
   }
 
-  enterFullscreen(): void {
+  async enterFullscreen(): Promise<void> {
     const elem = document.documentElement;
 
     if (elem.requestFullscreen) {
-      elem.requestFullscreen();
+      await elem.requestFullscreen();
     } else if ((elem as any).webkitRequestFullscreen) {
       (elem as any).webkitRequestFullscreen();
     } else if ((elem as any).msRequestFullscreen) {
@@ -40,11 +41,12 @@ export class AppComponent {
     }
 
     this.isFullscreen = true;
+    await this.requestWakeLock();
   }
 
-  exitFullscreen(): void {
+  async exitFullscreen(): Promise<void> {
     if (document.exitFullscreen) {
-      document.exitFullscreen();
+      await document.exitFullscreen();
     } else if ((document as any).webkitExitFullscreen) {
       (document as any).webkitExitFullscreen();
     } else if ((document as any).msExitFullscreen) {
@@ -52,5 +54,31 @@ export class AppComponent {
     }
 
     this.isFullscreen = false;
+    await this.releaseWakeLock();
+  }
+
+  async requestWakeLock(): Promise<void> {
+    try {
+      if ('wakeLock' in navigator) {
+        this.wakeLock = await (navigator as any).wakeLock.request('screen');
+        this.wakeLock.addEventListener('release', () => {
+          console.log('🔕 Wake Lock освобождён');
+        });
+        console.log('✅ Wake Lock активирован');
+      }
+    } catch (err) {
+      console.error('Ошибка Wake Lock:', err);
+    }
+  }
+
+  async releaseWakeLock(): Promise<void> {
+    if (this.wakeLock) {
+      try {
+        await this.wakeLock.release();
+        this.wakeLock = null;
+      } catch (err) {
+        console.error('Ошибка при освобождении Wake Lock:', err);
+      }
+    }
   }
 }
