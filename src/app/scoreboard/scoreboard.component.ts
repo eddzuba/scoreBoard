@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, OnDestroy} from '@angular/core';
 import { CdkDragDrop, DragDropModule } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
 import { GameState } from '../gameState/gameStates';
@@ -9,6 +9,7 @@ import { FormsModule } from "@angular/forms";
 import {AudioCacheService} from "../services/audioCache.service";
 import { GoProBleService } from '../services/gopro-ble.service';
 import {GoProStatusComponent} from "../gopro-status/gopro-status.component";
+import {ScoreNotificationService} from "../services/score-notification.service";
 
 
 declare const Telegram: any;
@@ -20,7 +21,7 @@ declare const Telegram: any;
   styleUrls: ['./scoreboard.component.css'],
   imports: [CommonModule, DragDropModule, FormsModule, GoProStatusComponent]
 })
-export class ScoreboardComponent implements OnInit {
+export class ScoreboardComponent implements OnInit, OnDestroy {
 
 
   voices = [
@@ -56,11 +57,15 @@ export class ScoreboardComponent implements OnInit {
   private clickTimeout: any;
   private delay: number = 500; // Задержка для определения двойного клика
   private whistleFirstClick: boolean = false;
+  showSettings: boolean = false;
+  currentTime: string = '';
+  private timerInterval: any;
 
   constructor(
     private playlistService: PlaylistService,
     private telegram: TelegramService,
     private audioCacheService: AudioCacheService,
+    private scoreNotification: ScoreNotificationService,
     public goProServ: GoProBleService) {
 
     this.curState.reset();
@@ -68,6 +73,27 @@ export class ScoreboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.telegram.expand();
+    this.startTimer();
+  }
+
+  ngOnDestroy(): void {
+    if (this.timerInterval) {
+      clearInterval(this.timerInterval);
+    }
+  }
+
+  private startTimer() {
+    this.updateTime();
+    this.timerInterval = setInterval(() => {
+      this.updateTime();
+    }, 1000);
+  }
+
+  private updateTime() {
+    const now = new Date();
+    const hours = now.getHours().toString().padStart(2, '0');
+    const minutes = now.getMinutes().toString().padStart(2, '0');
+    this.currentTime = `${hours}:${minutes}`;
   }
 
   incrementScore1() {
@@ -75,6 +101,7 @@ export class ScoreboardComponent implements OnInit {
     this.setLeft = this.rotateScore;
     this.playSound(1);
     this.curState.push( { score1: this.score1, score2: this.score2, serverSide: 1 } );
+    this.notifyScoreChange();
   }
 
   incrementScore2() {
@@ -83,6 +110,7 @@ export class ScoreboardComponent implements OnInit {
     this.setLeft = !this.rotateScore;
     this.playSound(2);
     this.curState.push( { score1: this.score1, score2: this.score2, serverSide: 2 } );
+    this.notifyScoreChange();
   }
 
   onVoiceChange(event: Event): void {
@@ -108,6 +136,7 @@ export class ScoreboardComponent implements OnInit {
 
       this.curState.reset();
       this.rotateScore = !this.rotateScore;
+      this.notifyScoreChange();
     }
 
   }
@@ -230,6 +259,7 @@ export class ScoreboardComponent implements OnInit {
   roundClick(event: MouseEvent) {
     event.stopPropagation(); // Останавливаем всплытие события
     this.rotateScore = !this.rotateScore;
+    this.notifyScoreChange();
   }
 
   private rollbackGameScore() {
@@ -246,9 +276,26 @@ export class ScoreboardComponent implements OnInit {
 
           this.playSound(prevState.serverSide);
           this.curState.push(prevState);
+          this.notifyScoreChange();
         }
 
     }
+  }
+
+  get notificationUrl(): string {
+    return this.scoreNotification.getUrl();
+  }
+
+  set notificationUrl(value: string) {
+    this.scoreNotification.setUrl(value);
+  }
+
+  private notifyScoreChange() {
+    this.scoreNotification.notifyScore(this.score1, this.score2, this.matchOver, this.rotateScore ? 'left' : 'right');
+  }
+
+  toggleSettings() {
+    this.showSettings = !this.showSettings;
   }
 
 
