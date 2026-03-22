@@ -11,7 +11,7 @@ export class ScoreNotificationService {
   private scoreSubject = new Subject<{team1: number, team2: number, finished: boolean, side: string}>();
 
   constructor(private http: HttpClient) {
-    this.defaultUrl = localStorage.getItem(this.URL_KEY) || 'http://212.124.107.106:5050';
+    this.defaultUrl = localStorage.getItem(this.URL_KEY) || 'https://scoreboard-proxy.eddzuba.workers.dev';
 
     // Подписываемся на поток изменений
     this.scoreSubject.pipe(

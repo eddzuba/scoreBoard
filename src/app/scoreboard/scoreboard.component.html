@@ -19,7 +19,7 @@
 
       </div>
       <div class="button whistle net">
-        <div class="current-time-display" *ngIf="score1 === 0 && score2 === 0">
+        <div class="current-time-display" *ngIf="(score1 === 0 && score2 === 0) || matchOver">
           {{ currentTime }}
         </div>
       </div>
@@ -39,7 +39,7 @@
       <h3>Настройки отправки счета</h3>
       <div class="input-group">
         <label for="url-input">URL для POST-запроса:</label>
-        <input id="url-input" type="text" [(ngModel)]="notificationUrl" placeholder="http://212.124.107.106:5050">
+        <input id="url-input" type="text" [(ngModel)]="notificationUrl" placeholder="https://scoreboard-proxy.eddzuba.workers.dev">
       </div>
       <div class="input-group">
         <label for="voice-select-modal">Голос озвучки:</label>

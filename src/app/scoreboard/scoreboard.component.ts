@@ -55,10 +55,12 @@ export class ScoreboardComponent implements OnInit, OnDestroy {
   whistlePlay: boolean = false;
 
   private clickTimeout: any;
-  private delay: number = 500; // Задержка для определения двойного клика
+  private delay: number = 1000; // Задержка для определения двойного клика
   private whistleFirstClick: boolean = false;
   showSettings: boolean = false;
   currentTime: string = '';
+  private lastScoreChangeTime: number = 0;
+  private readonly scoreChangeDebounce: number = 500; // мс — защита от случайных двойных нажатий
   private timerInterval: any;
 
   constructor(
@@ -97,6 +99,7 @@ export class ScoreboardComponent implements OnInit, OnDestroy {
   }
 
   incrementScore1() {
+    if (this.isScoreChangeTooFast()) return;
     this.score1++;
     this.setLeft = this.rotateScore;
     this.playSound(1);
@@ -105,6 +108,7 @@ export class ScoreboardComponent implements OnInit, OnDestroy {
   }
 
   incrementScore2() {
+    if (this.isScoreChangeTooFast()) return;
     this.score2++;
 
     this.setLeft = !this.rotateScore;
@@ -123,6 +127,7 @@ export class ScoreboardComponent implements OnInit, OnDestroy {
   }
 
   resetScores() {
+    if (this.isScoreChangeTooFast()) return;
     if(this.score2 != 0 || this.score1 != 0) {
       this.score1 = 0;
       this.score2 = 0;
@@ -299,6 +304,18 @@ export class ScoreboardComponent implements OnInit, OnDestroy {
   }
 
 
-
+  /**
+   * Защита от случайных двойных нажатий.
+   * Возвращает true, если с момента последнего изменения счёта прошло менее scoreChangeDebounce мс.
+   */
+  private isScoreChangeTooFast(): boolean {
+    const now = Date.now();
+    if (now - this.lastScoreChangeTime < this.scoreChangeDebounce) {
+      console.log('Score change ignored — too fast (debounce)');
+      return true;
+    }
+    this.lastScoreChangeTime = now;
+    return false;
+  }
 
 }
